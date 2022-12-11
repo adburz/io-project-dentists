@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "visits")
+@Table(name = "VISITS")
 public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class Visit {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.DETACH)
     private List<MedicalTreatment> medicalTreatments = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)

@@ -1,6 +1,7 @@
 package ior.project.entities;
 import jakarta.persistence.*;
 
+@Table(name="PERSONS")
 public class Person {
     protected String fName;
     protected String sName;
@@ -38,7 +39,7 @@ public class Person {
         this.address = address;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "address_id")
     protected Address address;
 }

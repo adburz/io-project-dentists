@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "doctors")
+@Table(name = "DOCTORS")
 public class Doctor extends Person{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +45,6 @@ public class Doctor extends Person{
         this.visits = visits;
     }
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.DETACH)
     private List<Visit> visits = new ArrayList<>();
 }

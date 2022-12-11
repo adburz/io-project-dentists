@@ -1,5 +1,6 @@
 package ior.project.entities;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "patients")
+@Table(name = "PATIENTS")
 public class Patient extends Person {
 
     @Id
@@ -15,7 +16,7 @@ public class Patient extends Person {
     private int id;
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.DETACH)
     private List<Visit> visits = new ArrayList<>();
 
     public int getId() {
