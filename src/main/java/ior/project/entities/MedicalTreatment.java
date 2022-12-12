@@ -2,7 +2,7 @@ package ior.project.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "MEDICAL_TREATMENTS")
+@Table(name = "medicalTreatments")
 public class MedicalTreatment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,8 +1,7 @@
 package ior.project.entities;
 import jakarta.persistence.*;
-
 @Entity
-@Table(name = "ADDRESSES")
+@Table(name = "addresses")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

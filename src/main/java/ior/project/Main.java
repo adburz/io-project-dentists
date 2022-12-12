@@ -1,32 +1,64 @@
 package ior.project;
-import ior.project.entities.Visit;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.graph.GraphAdapterBuilder;
+import ior.project.entities.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import com.google.gson.Gson;
-import org.hibernate.service.ServiceRegistry;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            Configuration configuration = new Configuration().configure();
-            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+            var configuration = new Configuration().configure();
+            var databaseDataInitializer = new DatabaseDataInitializer();
 
-            DatabaseDataInitializer databaseDataInitializer = new DatabaseDataInitializer();
-            databaseDataInitializer.initialize(configuration, serviceRegistry);
+            // Configure the Hibernate Configuration object
+            databaseDataInitializer.setDatabaseConfiguration(configuration);
+            var serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
 
-            SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-            Session session = sessionFactory.openSession();
+            // Create a SessionFactory
+            var sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
-            Visit visit = session.get(Visit.class, 1);
+            // Fill database with seed data
+            databaseDataInitializer.initialize(sessionFactory);
 
-            Gson gson = new Gson();
-            System.out.println(gson.toJson(visit));
+            // Initialize Gson
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            new GraphAdapterBuilder()
+                    .addType(Bill.class)
+                    .addType(Doctor.class)
+                    .addType(MedicalTreatment.class)
+                    .addType(Patient.class)
+                    .addType(Person.class)
+                    .addType(Visit.class)
+                    .registerOn(gsonBuilder);
+            Gson gson = gsonBuilder.create();
 
+            // get and print all visits from session
+            var session = sessionFactory.getCurrentSession();
+            var t = session.beginTransaction();
+            var visits = session.createQuery("from Visit", Visit.class).list();
+
+            System.out.println(gson.toJson(visits));
+            t.commit();
             session.close();
+
+            // Initialize CriteriaAPI
+            //CriteriaAPI criteriaAPI = new CriteriaAPI(gson, sessionFactory);
+
+            // Initialize JPQL
+            //JPQL jpql = new JPQL(gson, sessionFactory);
+
+            // get visits using criteria api and print them
+            //System.out.println((criteriaAPI.GetVisitsBeforeDate(new Date()).size()));
+
+            // get visits using jpql and print them using gson
+            //System.out.println((jpql.GetVisitsBeforeDate(new Date()).size()));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }

@@ -1,37 +1,26 @@
 package ior.project.entities;
+
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 @Entity
-@Table(name = "PATIENTS")
+@Table(name = "patients")
 public class Patient extends Person {
+    private Date birthDate;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private LocalDate birthDate;
-
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Visit> visits = new ArrayList<>();
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public LocalDate getBirthDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -43,12 +32,11 @@ public class Patient extends Person {
         this.visits = visits;
     }
 
-    public int getAge(){
+    public int getAge() {
         if (birthDate != null) {
-            return(LocalDate.now().getYear()-birthDate.getYear());
-        }
-        else {
-            return(0);
+            return (LocalDate.now().getYear() - birthDate.getYear());
+        } else {
+            return (0);
         }
     }
 }

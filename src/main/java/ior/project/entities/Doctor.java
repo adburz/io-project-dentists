@@ -1,25 +1,16 @@
 package ior.project.entities;
+
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "DOCTORS")
-public class Doctor extends Person{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+@Table(name = "doctors")
+public class Doctor extends Person {
     private String specialization;
     private String academicTitle;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getSpecialization() {
         return specialization;
@@ -45,6 +36,6 @@ public class Doctor extends Person{
         this.visits = visits;
     }
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Visit> visits = new ArrayList<>();
 }

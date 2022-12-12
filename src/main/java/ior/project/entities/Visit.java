@@ -3,16 +3,17 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "VISITS")
+@Table(name = "visits")
 public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private LocalDate date;
+    private Date date;
     private String description;
 
     @ManyToOne
@@ -23,7 +24,7 @@ public class Visit {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @OneToMany(mappedBy = "visit", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL)
     private List<MedicalTreatment> medicalTreatments = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -42,11 +43,11 @@ public class Visit {
         this.id = id;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

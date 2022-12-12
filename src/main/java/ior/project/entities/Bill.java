@@ -2,18 +2,21 @@ package ior.project.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "BILLS")
+@Table(name = "bills")
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private LocalDate date;
+    @OneToOne(mappedBy = "bill")
+    private Visit visit;
+    private Date date;
     private double amount;
     private int discount;
+    private double amtToPay;
 
     public int getId() {
         return id;
@@ -23,11 +26,11 @@ public class Bill {
         this.id = id;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -62,10 +65,5 @@ public class Bill {
     public void setVisit(Visit visit) {
         this.visit = visit;
     }
-
-    private double amtToPay;
-
-    @OneToOne(mappedBy = "bill")
-    private Visit visit;
 }
 

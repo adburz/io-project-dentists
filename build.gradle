@@ -17,6 +17,7 @@ dependencies {
     implementation 'com.h2database:h2:2.1.214'
     implementation 'com.google.code.gson:gson:2.8.6'
     compileOnly 'org.projectlombok:lombok:1.18.24'
+    implementation 'org.danilopianini:gson-extras:1.1.0'
 }
 
 test {
