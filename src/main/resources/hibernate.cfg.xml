@@ -10,5 +10,9 @@
         <property name="connection.password">sa</property>
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.hbm2ddl.auto">create</property>
+
+        <!-- TO REMOVE WARNINGS AND INFO FROM CONSOLE OUTPUT -->
+        <property name="hibernate.warnings">false</property>
+        <property name="hibernate.info">false</property>
     </session-factory>
 </hibernate-configuration>

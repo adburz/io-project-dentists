@@ -13,6 +13,10 @@ public class Person {
     protected String sName;
     protected String SSN;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    protected Address address;
+
     public int getId() {
         return id;
     }
@@ -52,8 +56,13 @@ public class Person {
     public void setAddress(Address address) {
         this.address = address;
     }
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
-    protected Address address;
+//    @Override
+//    public String toString() {
+//        return "{\n" +
+//                "\"id\":" + id + "\",\n" +
+//                "\"firstName\":\"" + fName + "\",\n" +
+//                "\"lastName\":\"" + sName + "\",\n" +
+//                "\"address\":" + address + ",\n" +
+//                "}\n";
+//    }
 }

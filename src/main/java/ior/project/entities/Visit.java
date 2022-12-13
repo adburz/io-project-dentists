@@ -24,7 +24,7 @@ public class Visit {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "visit", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<MedicalTreatment> medicalTreatments = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -79,8 +79,8 @@ public class Visit {
         return medicalTreatments;
     }
 
-    public void setMedicalTreatments(List<MedicalTreatment> employees) {
-        this.medicalTreatments = employees;
+    public void setMedicalTreatments(List<MedicalTreatment> medicalTreatments) {
+        this.medicalTreatments = medicalTreatments;
     }
 
     public Bill getBill() {
@@ -89,5 +89,18 @@ public class Visit {
 
     public void setBill(Bill bill) {
         this.bill = bill;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + "\n"+
+                "\"id\":" + id +"\n,"+
+                "\"date\":\"" + date + "\"" +"\n,"+
+                "\"description\":\"" + description + "\"" +"\n,"+
+                "\"doctor\":" + doctor +"\n,"+
+                "\"patient\":" + patient +"\n,"+
+                "\"medicalTreatments\":" + medicalTreatments +"\n,"+
+                "\"bill\":" + bill +"\n,"+
+                '}'+"\n";
     }
 }

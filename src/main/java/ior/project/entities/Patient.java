@@ -13,7 +13,7 @@ import java.util.List;
 public class Patient extends Person {
     private Date birthDate;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Visit> visits = new ArrayList<>();
 
     public Date getBirthDate() {
@@ -39,4 +39,16 @@ public class Patient extends Person {
             return (0);
         }
     }
+
+//    @Override
+//    public String toString() {
+//    super.toString();
+//        return "{\n" +
+//                "\"id\":" + getId() + "\",\n" +
+//                "\"firstName\":\"" + getfName() + "\",\n" +
+//                "\"lastName\":\"" + getsName() + "\",\n" +
+//                "\"birthDate\":\"" + birthDate + "\",\n" +
+//                "\"visits\":" + visits + ",\n" +
+//                "}\n";
+//    }
 }

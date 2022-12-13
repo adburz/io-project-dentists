@@ -7,6 +7,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import com.google.gson.Gson;
 
+import java.util.Date;
+
 public class Main {
     public static void main(String[] args) {
         try {
@@ -24,7 +26,7 @@ public class Main {
             databaseDataInitializer.initialize(sessionFactory);
 
             // Initialize Gson
-            GsonBuilder gsonBuilder = new GsonBuilder();
+            GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
             new GraphAdapterBuilder()
                     .addType(Bill.class)
                     .addType(Doctor.class)
@@ -35,30 +37,88 @@ public class Main {
                     .registerOn(gsonBuilder);
             Gson gson = gsonBuilder.create();
 
-            // get and print all visits from session
-            var session = sessionFactory.getCurrentSession();
-            var t = session.beginTransaction();
-            var visits = session.createQuery("from Visit", Visit.class).list();
+            //JPQL Queries
+            var jpqlQueryManager = new JPQLQueryManager(sessionFactory);
+            System.out.println("JPQL Queries:");
+            System.out.println("1.");
+            System.out.println("Get All Visits:");
+            var visits = jpqlQueryManager.GetAllVisits();
+            PrintCollectionWithGson(visits, gson);
+            System.out.println("========================================");
 
-            System.out.println(gson.toJson(visits));
-            t.commit();
-            session.close();
+            System.out.println("Get All Visits Before Date (05-05-2022):");
+            var visitsBeforeDate = jpqlQueryManager.GetVisitsBeforeDate(new Date(2022, 5, 5));
+            PrintCollectionWithGson(visitsBeforeDate, gson);
+            System.out.println("========================================");
+
+            System.out.println("2.");
+            System.out.println("Get Patients and their Visits:");
+            var patientsAndTheirVisits = jpqlQueryManager.GetPatientsAndTheirVisits();
+            PrintCollectionWithGson(patientsAndTheirVisits, gson);
+            System.out.println("========================================");
+
+            System.out.println("Get Patients and their Visits with Bills:");
+            var patientsAndTheirVisitsWithBills = jpqlQueryManager.GetPatientsAndTheirVisitsWithBillsAmountLessThan(50);
+            PrintCollectionWithGson(patientsAndTheirVisitsWithBills, gson);
+            System.out.println("========================================");
+
+            System.out.println("3.");
+            System.out.println("Get Doctors with at least two Patients:");
+            var doctorsWithAtLeastTwoPatientsx = jpqlQueryManager.GetDoctorsWithAtLeastTwoDifferentPatients();
+            PrintCollectionWithGson(doctorsWithAtLeastTwoPatientsx, gson);
+            System.out.println("========================================");
+
+            System.out.println("Get Patients with at least two Visits:");
+            var patientsWithAtLeastTwoVisits = jpqlQueryManager.GetPatientsWithAtLeastTwoVisits();
+            PrintCollectionWithGson(patientsWithAtLeastTwoVisits, gson);
+            System.out.println("========================================");
 
             // Initialize CriteriaAPI
-            //CriteriaAPI criteriaAPI = new CriteriaAPI(gson, sessionFactory);
+            var criteriaAPIManager = new CriteriaAPIManager(sessionFactory);
 
-            // Initialize JPQL
-            //JPQL jpql = new JPQL(gson, sessionFactory);
+            System.out.println("Criteria API Queries:");
+            System.out.println("1.");
+            System.out.println("Get All Visits:");
+            var _visits = criteriaAPIManager.GetAllVisits();
+            PrintCollectionWithGson(_visits, gson);
+            System.out.println("========================================");
 
-            // get visits using criteria api and print them
-            //System.out.println((criteriaAPI.GetVisitsBeforeDate(new Date()).size()));
+            System.out.println("Get All Visits Before Date (05-05-2022):");
+            var _visitsBeforeDate = criteriaAPIManager.GetVisitsBeforeDate(new Date(2022, 5, 5));
+            PrintCollectionWithGson(_visitsBeforeDate, gson);
+            System.out.println("========================================");
 
-            // get visits using jpql and print them using gson
-            //System.out.println((jpql.GetVisitsBeforeDate(new Date()).size()));
+            System.out.println("2.");
+            System.out.println("Get Patients and their Visits:");
+            var _patientsAndTheirVisits = criteriaAPIManager.GetPatientsAndTheirVisits();
+            PrintCollectionWithGson(_patientsAndTheirVisits, gson);
+            System.out.println("========================================");
+
+            System.out.println("Get Patients and their Visits with Bills:");
+            var _patientsAndTheirVisitsWithBills = criteriaAPIManager.GetPatientsAndTheirVisitsWithBillsAmountLessThan(50);
+            PrintCollectionWithGson(_patientsAndTheirVisitsWithBills, gson);
+            System.out.println("========================================");
+
+            System.out.println("3.");
+            System.out.println("Get Doctors with at least two Patients:");
+            var _doctorsWithAtLeastTwoPatients = criteriaAPIManager.GetDoctorsWithAtLeastTwoDifferentPatients();
+            PrintCollectionWithGson(_doctorsWithAtLeastTwoPatients, gson);
+            System.out.println("========================================");
+
+            System.out.println("Get Patients with at least two Visits:");
+            var _patientsWithAtLeastTwoVisits = criteriaAPIManager.GetPatientsWithAtLeastTwoVisits();
+            PrintCollectionWithGson(_patientsWithAtLeastTwoVisits, gson);
+            System.out.println("========================================");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    public static void PrintCollectionWithGson(Iterable collection, Gson gson) {
+        for (var item : collection) {
+            System.out.println(gson.toJson(item));
+        }
     }
 }

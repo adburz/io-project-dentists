@@ -9,6 +9,7 @@ public class MedicalTreatment {
     private int id;
 
     private int toothNo;
+    @Enumerated(EnumType.STRING)
     private MedicalTreatmentType type;
     private String description;
 

@@ -7,7 +7,9 @@ import org.hibernate.cfg.Configuration;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class DatabaseDataInitializer {
@@ -23,39 +25,29 @@ public class DatabaseDataInitializer {
 
     public void initialize(SessionFactory sessionFactory) throws ParseException {
         Session session = sessionFactory.openSession();
-        session.beginTransaction();
+
         fillDatabaseWithData(session);
-        session.getTransaction().commit();
+
         session.close();
     }
 
     private void fillDatabaseWithData(Session session) throws ParseException {
-        // Create a string list of 10 Polish cities without Polish characters
         String[] cities = {"Warszawa", "Krakow", "Lodz", "Wroclaw", "Poznan", "Gdansk", "Szczecin", "Bydgoszcz", "Lublin", "Katowice"};
-
-        // Create a string list of 10 random streets
         String[] streets = {"Koszykowa", "Zlocista", "Polska", "Anielska", "Wloska", "Krolewska", "Wielka", "Sucha", "Dluga", "Krotka"};
-
-        // Create a string list of 10 postal codes
         String[] postalCodes = {"40-000", "40-001", "40-002", "40-003", "40-004", "40-005", "40-006", "40-007", "40-008", "40-009"};
-
-        // Create a string list of 10 random Polish names
         String[] names = {"Adam", "Jan", "Piotr", "Marek", "Krzysztof", "Tomasz", "Andrzej", "Pawel", "Maciej", "Grzegorz"};
-
-        //Create a string list of 10 random Polish surnames without Polish characters
         String[] surnames = {"Nowak", "Kowalski", "Kowalczyk", "Wojcik", "Kaminski", "Lewandowski", "Zielinski", "Szymanski", "Wozniak", "Dabrowski"};
-
-        //Create a string list of 10 SSN numbers
         String[] SSNs = {"SSN1", "SSN2", "SSN3", "SSN4", "SSN5", "SSN6", "SSN7", "SSN8", "SSN9", "SSN10"};
-
-        // Create a string list of 4 random academic titles
         String[] academicTitles = {"dr", "dr hab", "dr hab n. med", "dr n. med"};
 
+        session.beginTransaction();
         int numberOfRecords = 10;
         for (int i = 0; i < numberOfRecords; i++) {
+
+            var billAndVisitDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).parse((1+i)+"-"+i%12+ "-2022");
             var bill = new Bill();
             bill.setAmount(20 * i);
-            bill.setDate(new Date());
+            bill.setDate(billAndVisitDate);
             bill.setDiscount(i);
             bill.setAmtToPay(20 + i);
             session.persist(bill);
@@ -89,6 +81,43 @@ public class DatabaseDataInitializer {
             medicalTreatment.setDescription(MedicalTreatmentType.values()[i % 3].toString() + " medical treatment");
             medicalTreatment.setToothNo(i);
             session.persist(medicalTreatment);
+
+            var visit = new Visit();
+            visit.setBill(bill);
+            visit.setDoctor(doctor);
+            visit.setPatient(patient);
+            visit.setMedicalTreatments(Arrays.asList(medicalTreatment));
+            visit.setDate(billAndVisitDate);
+            session.persist(visit);
         }
+
+        session.getTransaction().commit();
+
+        var doctor = session.get(Doctor.class, 1);
+        var patient = session.get(Patient.class, 4);
+
+        var bill = new Bill();
+        bill.setAmount(20);
+        bill.setDate(new Date());
+        bill.setDiscount(1);
+        bill.setAmtToPay(20);
+        session.persist(bill);
+
+        var medicalTreatment = new MedicalTreatment();
+        medicalTreatment.setType(MedicalTreatmentType.EXTRACTION);
+        medicalTreatment.setDescription("Extraction medical treatment");
+        medicalTreatment.setToothNo(1);
+        session.persist(medicalTreatment);
+
+        var visit = new Visit();
+        visit.setBill(bill);
+        visit.setDoctor(doctor);
+        visit.setPatient(patient);
+        visit.setMedicalTreatments(Arrays.asList(medicalTreatment));
+        visit.setDate(new Date());
+
+        session.beginTransaction();
+        session.persist(visit);
+        session.getTransaction().commit();
     }
 }
